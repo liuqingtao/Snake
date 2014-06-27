@@ -17,10 +17,13 @@ public class Snake {
 	private int size =0;
 	
 	private Node n = new Node(20,30,Dir.L);
-	public Snake(){
+	private Yard yard;
+	
+	public Snake(Yard yard){
 		head = n; 
 		tail = n;
 		size = 1;
+		this.yard = yard;
 	}
 	
 	public void addToTail(){
@@ -69,16 +72,29 @@ public class Snake {
 	
 	public void draw(Graphics g){
 		if(size <=0) return;
+		move();
 		for(Node n=head;n!=null;n=n.next){
 			n.draw(g);
 		}
-		
-		move();
+				
 	}
 	
 	private void move() {
+		checkDead();
 		addToHead();
 		deleteFromTail();
+		
+	}
+
+	private void checkDead() {
+		if(head.row<2||head.col<0||head.row>Yard.ROWS||head.col>Yard.CLOS){
+			yard.stop();
+		}
+		for(Node n =head.next;n!=null;n=n.next){
+			if(head.row == n.row && head.col == n.col){
+				yard.stop();
+			}
+		}
 		
 	}
 
@@ -117,10 +133,12 @@ public class Snake {
 		if(this.getRect().intersects(e.getRect())){
 			e.reAppear();
 			this.addToTail();
+			yard.setScore(yard.getScore()+5);
 		}
+		
 	}
 	
-	private Rectangle getRect(){
+	public Rectangle getRect(){
 		return new Rectangle(Yard.BLOCK_SIZE*head.col, Yard.BLOCK_SIZE*head.row, head.w,head.h);
 	}
 	
@@ -128,15 +146,19 @@ public class Snake {
 		int key = e.getKeyCode();
 		switch(key){
 		case KeyEvent.VK_UP:
+			if(head.dir ==Dir.D) return;
 			head.dir = Dir.U;
 			break;
 		case KeyEvent.VK_DOWN:
+			if(head.dir ==Dir.U) return; 
 			head.dir = Dir.D;
 			break;
 		case KeyEvent.VK_LEFT:
+			if(head.dir == Dir.R) return; 
 			head.dir = Dir.L;
 			break;
 		case KeyEvent.VK_RIGHT:
+			if(head.dir == Dir.L) return; 
 			head.dir = Dir.R;
 			break;
 		}

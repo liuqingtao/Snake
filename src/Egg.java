@@ -16,11 +16,11 @@ public class Egg {
 	}
 
 	public Egg(){
-		this(r.nextInt(Yard.ROWS),r.nextInt(Yard.CLOS));
+		this(r.nextInt(Yard.ROWS-3)+3,r.nextInt(Yard.CLOS));
 	}
 	
 	public void reAppear(){
-		row = r.nextInt(Yard.ROWS);
+		row = r.nextInt(Yard.ROWS-3) +3;
 		col = r.nextInt(Yard.CLOS);
 	}
 	public Rectangle getRect(){

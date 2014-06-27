@@ -16,10 +16,22 @@ public class Yard extends Frame {
 	public static final int ROWS = 50;
 	public static final int CLOS = 50;
 	public static final int BLOCK_SIZE =10;
+	private int score =0;
 	
-	Snake snake = new Snake();
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+	private boolean flag =true;
+	
+	Snake snake = new Snake(this);
 	Egg egg = new Egg();
 	Image offScreenImage =null;
+	
 	public void alunch(){
 		this.setLocation(200,200);
 		this.setSize(ROWS*BLOCK_SIZE,CLOS*BLOCK_SIZE);
@@ -48,11 +60,17 @@ public class Yard extends Frame {
 			g.drawLine(0, BLOCK_SIZE*i, CLOS*BLOCK_SIZE, BLOCK_SIZE*i);
 		}
 		
+		g.setColor(Color.YELLOW);
+		g.drawString("Score: "+score, 10, 60);
 		g.setColor(c);
 		snake.eat(egg);
 		egg.draw(g);
 		snake.draw(g);
 				
+	}
+	
+	public void stop(){
+		flag =false;
 	}
 	
 	@Override
@@ -70,7 +88,7 @@ public class Yard extends Frame {
 
 		@Override
 		public void run() {
-			while(true){
+			while(flag){
 				repaint();
 				try {
 					Thread.sleep(150);
