@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 
 
 
@@ -38,6 +39,7 @@ public class Snake {
 			break;
 		}
 		tail.next = node;
+		node.prve = tail;
 		tail = node;
 		size++;
 	}
@@ -59,6 +61,7 @@ public class Snake {
 			break;
 		}
 		node.next = head;
+		head.prve = node;
 		head = node;
 		size++;
 	}
@@ -68,8 +71,23 @@ public class Snake {
 		for(Node n=head;n!=null;n=n.next){
 			n.draw(g);
 		}
+		
+		move();
 	}
 	
+	private void move() {
+		addToHead();
+		deleteFromTail();
+		
+	}
+
+	private void deleteFromTail() {
+		if(size == 0) return;
+		tail.prve = null;
+		tail = tail.prve;
+		
+	}
+
 	class Node{
 		
 		int w = Yard.BLOCK_SIZE;
@@ -77,6 +95,7 @@ public class Snake {
 		Dir dir = Dir.L;
 		int row,col;
 		Node next = null;
+		Node prve = null;
 		
 		 Node(int row, int col,Dir dir) {
 			this.row = row;
@@ -91,5 +110,24 @@ public class Snake {
 			g.fillRect(Yard.BLOCK_SIZE*row, Yard.BLOCK_SIZE*col, w,h);
 			g.setColor(c);
 		}
+	}
+
+	public void keyPressed(KeyEvent e) {
+		int key = e.getKeyCode();
+		switch(key){
+		case KeyEvent.VK_UP:
+			head.dir = Dir.U;
+			break;
+		case KeyEvent.VK_DOWN:
+			head.dir = Dir.D;
+			break;
+		case KeyEvent.VK_LEFT:
+			head.dir = Dir.L;
+			break;
+		case KeyEvent.VK_RIGHT:
+			head.dir = Dir.R;
+			break;
+		}
+		
 	}
 }

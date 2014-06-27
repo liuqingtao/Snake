@@ -1,6 +1,9 @@
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -8,11 +11,14 @@ import java.awt.event.WindowEvent;
 public class Yard extends Frame {
 	
 	
+	
+
 	public static final int ROWS = 50;
 	public static final int CLOS = 50;
 	public static final int BLOCK_SIZE =10;
 	
 	Snake snake = new Snake();
+	Image offScreenImage =null;
 	public void alunch(){
 		this.setLocation(200,200);
 		this.setSize(ROWS*BLOCK_SIZE,CLOS*BLOCK_SIZE);
@@ -25,6 +31,7 @@ public class Yard extends Frame {
 			
 		});
 		this.setVisible(true);
+		new Thread(new PaintThread()).start();
 	}
 	
 	public void paint(Graphics g) {
@@ -42,6 +49,43 @@ public class Yard extends Frame {
 		g.setColor(c);
 		snake.draw(g);
 				
+	}
+	
+	@Override
+	public void update(Graphics g) {
+		if(offScreenImage == null){
+			offScreenImage = this.createImage(CLOS*BLOCK_SIZE, ROWS*BLOCK_SIZE);
+		}
+		Graphics goff = offScreenImage.getGraphics();
+		paint(goff);
+		g.drawImage(offScreenImage,0,0,null);
+		
+	}
+	
+	private class PaintThread implements Runnable{
+
+		@Override
+		public void run() {
+			while(true){
+				repaint();
+				try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			
+		}
+		
+	}
+	
+	private class KeyMonitor extends KeyAdapter{
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+			snake.keyPressed(e);
+		}
+		
 	}
 	
 	public static void main(String[] args) {
