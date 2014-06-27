@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -17,7 +18,9 @@ public class Yard extends Frame {
 	public static final int CLOS = 50;
 	public static final int BLOCK_SIZE =10;
 	private int score =0;
-	
+	private boolean gameOver =false;
+	private Font gameFont = new Font("ËÎÌו",Font.BOLD,60);
+	PaintThread paintThread = new PaintThread();
 	public int getScore() {
 		return score;
 	}
@@ -26,7 +29,7 @@ public class Yard extends Frame {
 		this.score = score;
 	}
 
-	private boolean flag =true;
+	
 	
 	Snake snake = new Snake(this);
 	Egg egg = new Egg();
@@ -49,6 +52,7 @@ public class Yard extends Frame {
 	}
 	
 	public void paint(Graphics g) {
+		
 		Color c = g.getColor();
 		g.setColor(Color.GRAY);
 		g.fillRect(0, 0, CLOS*BLOCK_SIZE, ROWS*BLOCK_SIZE);
@@ -62,15 +66,23 @@ public class Yard extends Frame {
 		
 		g.setColor(Color.YELLOW);
 		g.drawString("Score: "+score, 10, 60);
+		if(gameOver == true){
+			g.setFont(gameFont);
+			g.drawString("Game Over", 100, 300);
+			paintThread.stop();
+			
+		}
 		g.setColor(c);
 		snake.eat(egg);
 		egg.draw(g);
 		snake.draw(g);
+		
+		
 				
 	}
 	
 	public void stop(){
-		flag =false;
+		gameOver =true;
 	}
 	
 	@Override
@@ -85,7 +97,7 @@ public class Yard extends Frame {
 	}
 	
 	private class PaintThread implements Runnable{
-
+		boolean flag =true;
 		@Override
 		public void run() {
 			while(flag){
@@ -97,6 +109,10 @@ public class Yard extends Frame {
 				}
 			}
 			
+		}
+		
+		public void stop(){
+			flag =false;
 		}
 		
 	}
