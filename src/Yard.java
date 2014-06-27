@@ -18,6 +18,7 @@ public class Yard extends Frame {
 	public static final int BLOCK_SIZE =10;
 	
 	Snake snake = new Snake();
+	Egg egg = new Egg();
 	Image offScreenImage =null;
 	public void alunch(){
 		this.setLocation(200,200);
@@ -25,11 +26,12 @@ public class Yard extends Frame {
 		this.setBackground(Color.GRAY);
 		this.addWindowListener(new WindowAdapter(){
 
-			public void windowClosing(WindowEvent arg0) {
+			public void windowClosing(WindowEvent e) {
 				System.exit(0);
 			}
 			
 		});
+		this.addKeyListener(new KeyMonitor());
 		this.setVisible(true);
 		new Thread(new PaintThread()).start();
 	}
@@ -47,6 +49,8 @@ public class Yard extends Frame {
 		}
 		
 		g.setColor(c);
+		snake.eat(egg);
+		egg.draw(g);
 		snake.draw(g);
 				
 	}
@@ -69,7 +73,7 @@ public class Yard extends Frame {
 			while(true){
 				repaint();
 				try {
-					Thread.sleep(50);
+					Thread.sleep(150);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
